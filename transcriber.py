@@ -1,12 +1,17 @@
 import speech_recognition as sr
 import os
 from colorama import Fore, Style, init
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Initialize colorama
 init(autoreset=True)
 
-# Define a peach color substitute (orange-pink shade)
-PEACH = Fore.LIGHTRED_EX  # Soft warm pink (close to peach)
+# Define a peach color substitute
+PEACH = Fore.LIGHTRED_EX  # Close to pastel peach
 HEADER = Fore.LIGHTMAGENTA_EX
 BOLD = Style.BRIGHT
 
@@ -17,7 +22,6 @@ def show_header():
 ║      🍑 Speech-to-Text Transcriber App     ║
 ╚════════════════════════════════════════════╝
 """)
-
 
 def transcribe_audio_file(file_path):
     recognizer = sr.Recognizer()
@@ -36,14 +40,18 @@ def transcribe_audio_file(file_path):
     print(PEACH + "🧠 Processing speech...")
 
     try:
-        text = recognizer.recognize_google(audio)
+        # Use API key from environment if available
+        if GOOGLE_API_KEY:
+            text = recognizer.recognize_google(audio, key=GOOGLE_API_KEY)
+        else:
+            text = recognizer.recognize_google(audio)
+
         print("\n" + HEADER + BOLD + "📝 Transcription Result:\n")
         print(PEACH + text)
     except sr.UnknownValueError:
         print(Fore.RED + "❌ Could not understand the audio.")
     except sr.RequestError as e:
         print(Fore.RED + f"⚠️ Request failed: {e}")
-
 
 # --------- MAIN CALL ---------
 if __name__ == "__main__":
