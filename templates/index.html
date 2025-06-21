@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Speech Transcriber</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+   <h1>🎙️ Speech-to-Text Transcriber</h1>
+   
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="audio" accept=".wav,.mp3" required>
+      <button type="submit">Transcribe</button>
+    </form>
+
+    {% if audio_file %}
+      <div class="playback">
+        <h3>🎧 Audio Playback:</h3>
+        <audio controls>
+          <source src="{{ url_for('uploaded_file', filename=audio_file) }}" type="audio/wav">
+          Your browser does not support audio.
+        </audio>
+      </div>
+    {% endif %}
+
+    {% if transcript %}
+      <div class="transcript-box">
+        <h3>📝 Transcription:</h3>
+        <p>{{ transcript }}</p>
+        {% if download_link %}
+          <a href="{{ url_for('download_transcript', filename=download_link) }}" class="download-btn">📥 Download .txt</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
